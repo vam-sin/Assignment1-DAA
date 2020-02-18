@@ -39,6 +39,30 @@ void desc(vector<int> adj[], int v, int V, vector<int> Desc[])
 	DFS(adj, visited, v, v, Desc);
 }
 
+vector<int> intersection(vector<int> A, vector<int> B, int V)
+{
+	vector<int> inter;
+	for(int i=0;i<V;i++)
+	{
+		if((find(A.begin(), A.end(), i) != A.end()) && (find(B.begin(), B.end(), i) != B.end()))
+			inter.push_back(i);
+	}
+
+	return inter;
+}
+
+vector<int> slash(vector<int> A, vector<int> B)
+{
+	// A\B
+	for(int i=0;i<A.size();i++)
+	{
+		if(find(B.begin(), B.end(), A[i]) != B.end())
+			remove(A.begin(), A.end(), i); 
+	}
+
+	return A;
+}
+
 int main()
 {
 	int V, E;
