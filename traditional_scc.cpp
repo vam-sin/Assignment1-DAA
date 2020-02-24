@@ -96,13 +96,13 @@ int main(int argc, char** argv)
 	cout<<"[UPDATE] DFS 2 complete." << endl;
 	auto end = chrono::steady_clock::now();
 	auto calculation_time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	cout << "Time taken: " << 1.00 * calculation_time/1000 << endl;
-	cout << "Number of SCCs: " << components.size() << endl;
+	cout << "[RESULT] Time taken: " << 1.00 * calculation_time/1000 << endl;
+	cout << "[RESULT] Number of SCCs: " << components.size() << endl;
 	ll max_scc = components[0].size();
 	for(ll i = 0; i < components.size();i++){
 		if(components[i].size() > max_scc) max_scc = components[i].size();
 	}
-	cout << "Largest SCC size: " << max_scc << "("<< 1.0 * max_scc/V << ")"<<endl;
+	cout << "[RESULT] Largest SCC size: " << max_scc << "("<< 1.0 * max_scc/V << ")"<<endl;
 	ofstream outfile;
 	outfile.open(argv[1], ios::out);
 	for(ll i=0;i<components.size();i++){
