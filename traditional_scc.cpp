@@ -1,9 +1,10 @@
 #include<bits/stdc++.h>
+#include <unistd.h>
 using namespace std;
-#define MAX 1000
+#define ll long long int
 
 /*
-Decomposing a directed graph into its strongly connected components by running two 
+Decomposing a directed graph llo its strongly connected components by running two 
 depth first searches.
 Strongly connected component of a directed graph G = (V, E) is a maximal set of vertices
 C < V such that for every pair of vertices u and v in C, we have both u -> v and v -> u; 
@@ -18,74 +19,97 @@ O(V + E)
 One dfs on G and another on G.T
 */
 
-stack<int> stck;
-int component[MAX];
-vector<int> components[MAX];
-int num_comp;
+stack<ll> stck;
+vector<vector<ll>> components;
+ll num_comp = 0;
 
-void DFS1(vector<int> adj[], bool visited[], int source)
+void DFS1(map<ll, vector<ll>> adj, unordered_map<ll, bool>& visited, ll source)
 {
 	visited[source] = true;
-	for(int j = 0; j < adj[source].size(); j++)
-	{
+	if(!adj[source].empty()){
+		for(ll j = 0; j < adj[source].size(); j++){
 		if(visited[adj[source][j]] == false)
 			DFS1(adj, visited, adj[source][j]);
+		}
 	}
 	stck.push(source);
 }
 
-void DFS2(vector<int> adjT[], bool visited[], int source)
+void DFS2(map<ll, vector<ll>> adjT, unordered_map<ll, bool>& visited, ll source)
 {
-	cout << source << " ";
-	component[source] = num_comp;
+	// cout << source << " ";
 	components[num_comp].push_back(source);
 	visited[source] = true;
-	for(int j = 0; j < adjT[source].size(); j++)
+	for(ll j = 0; j < adjT[source].size(); j++)
 	{
-		if(visited[adjT[source][j]] == false)
+		if(!visited[adjT[source][j]])
 			DFS2(adjT, visited, adjT[source][j]);
 	}
 }
 
-void addEdge(vector<int> adj[], int u, int v)
+int main(int argc, char** argv)
 {
-	// u -> v
-	adj[u].push_back(v);
-}
-
-int main()
-{
-	int V, E;
+	auto start = chrono::steady_clock::now();
+	ll V, E;
 	cin >> V >> E;
+	cout << "Nodes: " << V << ". Edges: "<< E <<endl;
+	
 	// Adjacency list for G and G.T
-	vector<int> adj[V], adjT[V];
-	for(int i = 0; i < E; i++)
+	map<ll, vector<ll>> adj, adjT;
+	map<ll, bool> nodes;
+	for(ll i = 0; i < E; i++)
 	{
-		int m, n;
+		ll m, n;
 		cin >> m >> n;
-		// To get Transpose, do addEdje(adj, n, m);
-		addEdge(adj, m, n);
-		addEdge(adjT, n, m);
+		adj[m].push_back(n);
+		adjT[n].push_back(m);
+		nodes[m] = true;
+		nodes[n] = true;
 	}
-	bool visited[V] = {false};
+	cout<<"[UPDATE] Input complete. " << endl;
+	unordered_map<ll, bool> visited;
 
 	// DFS on G
-	DFS1(adj, visited, 0);
-
-	for(int i=0;i<V;i++)
-		visited[i] = false;
+	for(auto it = nodes.begin(); it != nodes.end();++it){
+		if(!visited[it->first]){
+			DFS1(adj, visited, it->first);
+		}
+	}
+	unordered_map<ll, bool> visited2;
+	cout<<"[UPDATE] DFS 1 complete. " << endl;
 
 	// DFS on G.T
 	while(!stck.empty())
 	{
-		int source = stck.top();
+		ll source = stck.top();
 		stck.pop();
-		if(visited[source] == false)
+		vector<ll> tmp;
+		if(!visited2[source])
 		{
-			cout << "Component " << num_comp << ": ";
-			DFS2(adjT, visited, source);
+			// cout << "Component " << num_comp << ": ";
+			components.push_back(tmp);
+			DFS2(adjT, visited2, source);
 			num_comp++;
-			cout << endl;
+			// cout << endl;
 		}
 	}
+	cout<<"[UPDATE] DFS 2 complete." << endl;
+	auto end = chrono::steady_clock::now();
+	auto calculation_time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+	cout << "Time taken: " << 1.00 * calculation_time/1000 << endl;
+	cout << "Number of SCCs: " << components.size() << endl;
+	ll max_scc = components[0].size();
+	for(ll i = 0; i < components.size();i++){
+		if(components[i].size() > max_scc) max_scc = components[i].size();
+	}
+	cout << "Largest SCC size: " << max_scc << "("<< 1.0 * max_scc/V << ")"<<endl;
+	ofstream outfile;
+	outfile.open(argv[1], ios::out);
+	for(ll i=0;i<components.size();i++){
+		for(ll j = 0;j<components[i].size();j++){
+			outfile << components[i][j] << " ";
+		}
+		outfile << endl;
+	}
+	return 0;
 }
