@@ -14,13 +14,14 @@
 
 | S. No | Dataset                  | Nodes   | Edges    | Traditional  |     DCSC     |
 |-------|--------------------------|---------|----------|--------------|--------------|
-| 1     | Wikipedia Voting Dataset | 7115    | 103689   | 18.742       |      		  |
-| 2     | Email EU Dataset         | 1005    |  25571   |  0.638       |      		  |
-| 3     | Gnutella P2P Aug-5       | 8846    |  31839   | 28.271       |      		  |
-| 4     | Gnutella P2P Aug-6       | 8717    |  31525   | 27.892       |      		  |
-| 5     | Gnutella P2P Aug-8       | 6301    |  20777   | 13.891       |      		  |
-| 6     | Gnutella P2P Aug-9       | 8114    |  26013   | 22.754       |      		  |
+| 1     | Wikipedia Voting Dataset | 7115    | 103689   | 18.742       | 168.699	  |
+| 2     | Email EU Dataset         | 1005    |  25571   |  0.638       | 9.416		  |
+| 3     | Gnutella P2P Aug-5       | 8846    |  31839   | 28.271       | 137.038	  |
+| 4     | Gnutella P2P Aug-6       | 8717    |  31525   | 27.892       | 143.69		  |
+| 5     | Gnutella P2P Aug-8       | 6301    |  20777   | 13.891       | 161.72		  |
+| 6     | Gnutella P2P Aug-9       | 8114    |  26013   | 22.754       | 196.33		  |
 
+All these datasets were run on computers from Systems Lab, which have the configuration: `Intel® Core™ i7-8700 CPU @ 3.20GHz × 12, Memory: 7.7 GiB`. 
 
 # Visualisation
 
