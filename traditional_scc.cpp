@@ -1,28 +1,42 @@
+/**
+ * \mainpage
+ * The strongly connected component of a directed graph G = (V, E) is defined
+ * as a maximal set of vertices C (subset of V) such that for every pair of 
+ * vertices u and v in C, we have both u -> v and v -> u; that is, any pair of
+ * vertices u and v are reachable from each other. This repo implements two
+ * different algorithms to find the strongly connected components of graphs, 
+ * runs it on various datasets taken from the SNAP Large Network Datasets and
+ * compares the runtimes of both algorithms. 
+ */
+
+/**
+ * \file traditional_scc.cpp
+ * This program works by decomposing a directed graph intp its strongly connected
+ * components by running two depth first searches.  G contains the graph and G.T is
+ * the transpose of G - a graph with same nodes as G, but with directions reversed.
+ * This algorithm works on the principle that both the graph and its transpose
+ * have the same connected components (that is, u and v are reachable in G only if 
+ * they are reachable in G.T). This is an implementation of the traditional
+ * Kosaraju's Linear Time Algorithm that runs in O(V + E) in a graph with V nodes and
+ * E edges. 
+ */
+
 #include<bits/stdc++.h>
 #include <unistd.h>
 using namespace std;
 #define ll long long int
 
-/*
-Decomposing a directed graph llo its strongly connected components by running two 
-depth first searches.
-Strongly connected component of a directed graph G = (V, E) is a maximal set of vertices
-C < V such that for every pair of vertices u and v in C, we have both u -> v and v -> u; 
-that is, vertices u and v are reachable from each other.
-G and G.T(Transpose, has edges reversed) have the same connected components. 
-(u and v are reachable in G only if they are reachable in G.T)
-Finishing Time: The finishing time f[v] is the number of nodes discovered or finished before finishing
-the expansion of v.
-*/
-/* Kosaraju's Linear Time Algorithm
-O(V + E)
-One dfs on G and another on G.T
-*/
-
 stack<ll> stck;
 vector<vector<ll>> components;
 ll num_comp = 0;
 
+
+/**
+ * @brief the first graph traversal (on the original graph)
+ * @param adj the adjacency list of the graph
+ * @param visited stores the list of nodes already visited/reached
+ * @param source start location of the traversal
+ */
 void DFS1(map<ll, vector<ll>> adj, unordered_map<ll, bool>& visited, ll source)
 {
 	visited[source] = true;
@@ -35,9 +49,14 @@ void DFS1(map<ll, vector<ll>> adj, unordered_map<ll, bool>& visited, ll source)
 	stck.push(source);
 }
 
+/**
+ * @brief the second graph traversal (on the transposed graph)
+ * @param adjT the adjacency list of the transposed graph
+ * @param visited stores the list of nodes already visited/reached
+ * @param source start location of the traversal
+ */
 void DFS2(map<ll, vector<ll>> adjT, unordered_map<ll, bool>& visited, ll source)
 {
-	// cout << source << " ";
 	components[num_comp].push_back(source);
 	visited[source] = true;
 	for(ll j = 0; j < adjT[source].size(); j++)
@@ -47,6 +66,13 @@ void DFS2(map<ll, vector<ll>> adjT, unordered_map<ll, bool>& visited, ll source)
 	}
 }
 
+
+/**
+ * @brief driver code for input, output and running the algorithm. Expects command
+ *		  line arguments. 
+ * @param argc number of command line arguments
+ * @param argv command line arguments list (first argument should be output file name)
+ */
 int main(int argc, char** argv)
 {
 	auto start = chrono::steady_clock::now();
@@ -86,11 +112,9 @@ int main(int argc, char** argv)
 		vector<ll> tmp;
 		if(!visited2[source])
 		{
-			// cout << "Component " << num_comp << ": ";
 			components.push_back(tmp);
 			DFS2(adjT, visited2, source);
 			num_comp++;
-			// cout << endl;
 		}
 	}
 	cout<<"[UPDATE] DFS 2 complete." << endl;

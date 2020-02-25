@@ -1,11 +1,23 @@
+/**
+ * \file dcsc.cpp
+ * This program is an implementation of the 2003 rsearch paper, A divide-and-conquer 
+ * algorithm for identifying strongly connected components. This program works by finding 
+ * one strongly connected component, removing that from the graph and then recursively
+ * dividing and concurring the graph into smaller and smaller parts. The key selling point
+ * of this algorithm is the fact that it can be easily parallelized.
+ */
+
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long int
 
 vector<set<ll>> final_ans;
-// map<ll,bool> visited;
 set<ll> all_nodes;
 
+/**
+ * @brief print the graph as an adjacency list. Used primarily for debugging
+ * @param adj the adjacency list of the graph
+ */
 void print_graph(map<ll,set<ll>> &adj){
 	for (auto i = adj.begin(); i != adj.end(); i++){
 		cout<<i->first<<"->";
@@ -16,6 +28,10 @@ void print_graph(map<ll,set<ll>> &adj){
 	}
 }
 
+/**
+ * @brief print all the elements in a given set
+ * @param a a set
+ */
 void print_set(set<ll> &a){
 	for(auto i = a.begin(); i != a.end(); i++){
 		cout<<(*i)<<" ";
@@ -23,6 +39,12 @@ void print_set(set<ll> &a){
 	cout<<endl;
 }
 
+/**
+ * @brief depth first search on the given graph
+ * @param v source/start point
+ * @param adj adjacency list of graph
+ * @param visited nodes already visited
+ */
 void DFS(ll v,map<ll, set<ll>> &adj,set<ll> &ans, map<ll, bool> &visited){
 	visited[v] = true;
 	ans.insert(v);
@@ -41,6 +63,12 @@ void DFS(ll v,map<ll, set<ll>> &adj,set<ll> &ans, map<ll, bool> &visited){
 	}
 }
 
+/**
+ * @brief calculates the descendants of a node, the subset of vertices in G reachable from that point
+ * @param adj the adjacency list of the graph
+ * @param v the node
+ * @return descendents of the node
+ */
 set<ll> desc(map<ll, set<ll>> &adj,ll v){
 	set<ll> ans;
 	map<ll, bool> visited;
@@ -48,6 +76,14 @@ set<ll> desc(map<ll, set<ll>> &adj,ll v){
 	return ans;
 }
 
+
+/**
+ * @brief calculates the predecessors of a node 'v', the subset of vertices from which v is reachable
+ * @param adj the adjacency list of the graph
+ * @param nodes a set containing all the nodes in the graph
+ * @param v the node
+ * @return set of predecessors
+ */
 set<ll> pred(map<ll, set<ll>> &adj, set<ll> &nodes, ll v){
 	set<ll> ans;
 	for(auto i=nodes.begin();i != nodes.end();i++){
@@ -60,6 +96,12 @@ set<ll> pred(map<ll, set<ll>> &adj, set<ll> &nodes, ll v){
 	return ans;
 }
 
+/**
+ * @brief calculates the intersection of two sets
+ * @param a the first set
+ * @param b the second set
+ * @return the intersection of the sets, another set
+ */
 set<ll> intersection(set<ll> &a, set<ll> &b){
 	set<ll> ans;
 	for(auto i = a.begin(); i != a.end(); i++){
@@ -70,6 +112,12 @@ set<ll> intersection(set<ll> &a, set<ll> &b){
 	return ans;
 }
 
+/**
+ * @brief calculates the complement of two sets
+ * @param a the first set 
+ * @param b the second set
+ * @return set of elements in a - b
+ */
 set<ll> slash(set<ll> &a,set<ll> &b){
 	set<ll> ret;
 	for (auto i = a.begin(); i != a.end(); i++){
@@ -80,6 +128,12 @@ set<ll> slash(set<ll> &a,set<ll> &b){
 	return ret;
 }
 
+/**
+ * @brief calculates the union of two sets
+ * @param a the first set 
+ * @param b the second set
+ * @return set of elements in a + b
+ */
 set<ll> union_(set<ll> &a,set<ll> &b){
 	set<ll> s;
 	for (auto i = a.begin(); i != a.end(); ++i){
@@ -91,6 +145,10 @@ set<ll> union_(set<ll> &a,set<ll> &b){
 	return s;
 }
 
+/**
+ * @brief computes one strongly connected component of the graph
+ * @param adj adjacency list of the graph 
+ */
 void DCSC(map<ll,set<ll>> &adj){	
 	if(adj.size() == 0){
 		return;

@@ -1,11 +1,20 @@
+## \file visualise.py
+# Draw the given graph and show the different strongly connected 
+# components in different colors. The first command line argument
+# must be the output file from the SCC algorithm and the second
+# command line argument should be the dataset containing all the 
+# edges and nodes in the graph. Visualisation has been done using
+# Python's NetworkX library.
+
 import networkx as nx 
 import csv
 import matplotlib.pyplot as plt 
 import sys
 import time
 
-
 colors = ['g', 'r', 'c', 'b',  'm', 'y', 'k']
+## @var color_map
+#  a dictionary containing the mapping:node->color
 color_map = dict()
 start_time = time.time()
 g = nx.DiGraph() 
@@ -38,6 +47,6 @@ for n in g.nodes():
 
 colors = [node[1]['color'] for node in g.nodes(data=True)]
 nx.draw_networkx(g, pos, with_labels=False, node_color=colors)
-plt.savefig('foo.png')
+plt.savefig('graph_scc_plot.png')
 end_time = time.time()
 print("Execution time: ", end_time - start_time) 
